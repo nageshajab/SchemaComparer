@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].{0}(
+{1},
+ CONSTRAINT [{2}] PRIMARY KEY CLUSTERED 
+(
+	{3}
+))
+{4}
