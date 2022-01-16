@@ -19,8 +19,10 @@ namespace SchemaComparer
             {
                 dbScript += Table.TableScript(tbl);
             }
-            dbScript += Table.foreignKeyConstraints;
 
+            dbScript += Table.CreateColumnsScript.ToString();
+            dbScript += Table.foreignKeyConstraints;
+            
             File.WriteAllText("dbscript.sql", dbScript);
         }
     }

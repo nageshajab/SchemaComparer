@@ -25,6 +25,8 @@ namespace SchemaComparer
         private static int TABLE_CONSTRAINT = 6;
         public static string TABLE { get; set; }
         private static string primaryConstraintName;
+
+        public static StringBuilder CreateColumnsScript = new StringBuilder();
         #endregion
 
         public static List<string> GetTables()
@@ -43,9 +45,30 @@ namespace SchemaComparer
             return lstTables;
         }
 
+        public static void ColumnIdentityScript(string column, string columnName, bool isIdentity)
+        {
+            if (isIdentity)
+            {
+                string sqlAlterColumn = File.ReadAllText(".\\Resources\\AlterIdentityColumn.txt");
+                CreateColumnsScript.Append(
+                    "\n" + string.Format(sqlAlterColumn, TABLE, columnName));
+            }
+            else
+            {
+                string sqlAlterColumn = File.ReadAllText(".\\Resources\\AlterColumn.txt");
+                CreateColumnsScript.Append(
+                    "\n" + string.Format(sqlAlterColumn,
+                    column.Substring(0, column.LastIndexOf(",")),
+                    TABLE,
+                    columnName));
+            }
+        }
+
         public static string ColumnScript()
         {
+            bool isIdentityColumn = false;
             string sqlCreateColumn = File.ReadAllText(".\\Resources\\CreateColumn.txt");
+
             string columns = "";
             int i = 0;
             foreach (DataRow dr in DataSet.Tables[TABLE_COLUMNS].Rows)
@@ -75,6 +98,7 @@ namespace SchemaComparer
                     && DataSet.Tables[TABLE_IDENTITY].Rows[0]["Identity"].ToString().Trim() != "No identity column defined."
                     && DataSet.Tables[TABLE_IDENTITY].Rows[0]["Seed"].ToString() != "")
                 {
+                    isIdentityColumn = true;
                     length = $"IDENTITY({DataSet.Tables[TABLE_IDENTITY].Rows[0]["Seed"]},{DataSet.Tables[TABLE_IDENTITY].Rows[0]["Increment"]})";
                 }
                 else if (datatype.ToLower() == "int")
@@ -89,11 +113,15 @@ namespace SchemaComparer
                     appendLine = "\n";
                 else
                     appendLine = "";
-                columns += appendLine + string.Format(sqlCreateColumn, columnName, datatype, length, nullable);
+                string column = string.Format(sqlCreateColumn, columnName, datatype, length, nullable);
+                columns += appendLine + column;
                 i++;
+
+                ColumnIdentityScript(column, columnName, isIdentityColumn);
             }
 
-            return columns.Substring(0, columns.LastIndexOf(","));
+            columns = columns.Substring(0, columns.LastIndexOf(","));
+            return columns;
         }
 
         public static string IndexScript()
@@ -157,7 +185,7 @@ namespace SchemaComparer
 
             sqlCreateTable = string.Format(sqlCreateTable, table, columns, primaryConstraint, indexes);
 
-            return sqlCreateTable + "\n\n\n";
+            return sqlCreateTable + "\n\n";
         }
 
         public static string ForeignKeyConstraintScript()

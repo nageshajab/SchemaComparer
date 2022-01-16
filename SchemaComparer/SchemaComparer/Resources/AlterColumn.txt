@@ -1,0 +1,5 @@
+﻿IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'{1}') AND name = '{2}')
+BEGIN
+ALTER TABLE {1}
+ALTER column {0};
+END

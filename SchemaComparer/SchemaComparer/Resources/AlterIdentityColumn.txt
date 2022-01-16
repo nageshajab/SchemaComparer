@@ -1,0 +1,7 @@
+﻿IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'{0}') AND name = '{1}')
+BEGIN
+ALTER TABLE {0} ADD Id1 INT IDENTITY(1,1)
+select {1} into id1 from {0}
+ALTER TABLE {0}  DROP COLUMN id1
+EXEC sp_rename '{0}.id1', 'id', 'COLUMN'
+END
