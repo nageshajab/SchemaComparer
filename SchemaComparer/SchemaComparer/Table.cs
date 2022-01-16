@@ -16,8 +16,8 @@ namespace SchemaComparer
     {
         #region Variables
         static readonly NLog.Logger logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
-        public static string foreignKeyConstraints;
         static readonly string connstring = ConfigurationManager.ConnectionStrings["MasterDb_LOCAL"].ConnectionString;
+        public static string foreignKeyConstraints;
         private static DataSet DataSet { get; set; }
         private static int TABLE_COLUMNS = 1;
         private static int TABLE_IDENTITY = 2;
@@ -45,7 +45,7 @@ namespace SchemaComparer
             return lstTables;
         }
 
-        public static void ColumnIdentityScript(string column, string columnName, bool isIdentity)
+        public static void ColumnIdentityScript(string column, string columnName, bool isIdentity, string datatype)
         {
             if (isIdentity)
             {
@@ -60,7 +60,8 @@ namespace SchemaComparer
                     "\n" + string.Format(sqlAlterColumn,
                     column.Substring(0, column.LastIndexOf(",")),
                     TABLE,
-                    columnName));
+                    columnName,
+                    datatype));
             }
         }
 
@@ -117,7 +118,7 @@ namespace SchemaComparer
                 columns += appendLine + column;
                 i++;
 
-                ColumnIdentityScript(column, columnName, isIdentityColumn);
+                ColumnIdentityScript(column, columnName, isIdentityColumn, datatype);
             }
 
             columns = columns.Substring(0, columns.LastIndexOf(","));

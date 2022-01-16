@@ -1,5 +1,13 @@
 ﻿IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'{1}') AND name = '{2}')
 BEGIN
 ALTER TABLE {1}
-ALTER column {0};
+ADD {0};
 END
+
+if exists(SELECT column_name, data_type,character_maximum_length FROM information_schema.columns
+WHERE table_name = '{1}' and COLUMN_NAME='{2}' and DATA_TYPE!='{3}')
+begin 
+ALTER TABLE {1}
+ALTER column {0};
+end
+
