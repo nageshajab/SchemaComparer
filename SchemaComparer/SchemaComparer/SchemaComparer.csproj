@@ -6,16 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NetCore5.DatabaseLayer" Version="1.0.2" />
+    <PackageReference Include="NetCore5.DatabaseLayer" Version="1.0.4" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.14.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\NetCore5.DatabaseLayer\NetCore5.DatabaseLayer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\PrimaryKeyClustered.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\CreateForeignConstraint.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\CreateIndex.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

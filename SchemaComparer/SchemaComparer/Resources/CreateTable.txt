@@ -1,7 +1,8 @@
-﻿CREATE TABLE [dbo].{0}(
-{1},
- CONSTRAINT [{2}] PRIMARY KEY CLUSTERED 
-(
-	{3}
-))
-{4}
+﻿IF NOT EXISTS (SELECT * FROM sys.objects 
+WHERE object_id = OBJECT_ID(N'[dbo].{0}') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].{0}(
+{1}
+{2})
+{3}
+END

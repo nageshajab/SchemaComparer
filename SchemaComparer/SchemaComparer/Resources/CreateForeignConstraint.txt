@@ -1,0 +1,14 @@
+﻿
+if not exists( select * from sys.foreign_keys where 
+referenced_object_id = OBJECT_ID(N'{6}') 
+and parent_object_id = OBJECT_ID(N'{0}'))
+begin
+
+ALTER TABLE {0}  WITH CHECK ADD CONSTRAINT {1} FOREIGN KEY({2})
+REFERENCES {3} 
+ON DELETE {4}
+ON UPDATE {5}
+
+ALTER TABLE {0} CHECK CONSTRAINT {1}
+
+END

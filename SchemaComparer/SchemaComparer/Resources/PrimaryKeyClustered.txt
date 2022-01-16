@@ -1,0 +1,4 @@
+﻿, CONSTRAINT [{0}] PRIMARY KEY CLUSTERED 
+(
+	{1}
+)
