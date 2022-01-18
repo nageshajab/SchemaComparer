@@ -85,7 +85,9 @@ namespace SchemaComparer
                 string datatype = dr[1].ToString();
                 string nullable = dr[6].ToString() == "no" ? "Not NULL" : "NULL";
                 string length = dr[3].ToString() == "-1" ? "max" : dr[3].ToString();
+                string scale = dr[5].ToString();
                 int length1 = 0;
+
                 if (int.TryParse(length, out length1))
                 {
                     length1 = int.Parse(length);
@@ -93,14 +95,17 @@ namespace SchemaComparer
                         length1 /= 2;
                     length = length1.ToString();
                 }
-
-                if (datatype == "uniqueidentifier" || datatype == "bit")
+                if(datatype=="varchar" || datatype == "nvarchar")
+                {
+                    length = $"({length})";
+                }
+                else if (datatype.ToLower() == "datetime" || datatype.ToLower() == "datetime2" || datatype.ToLower() == "xml" || datatype== "smalldatetime" || datatype == "uniqueidentifier" || datatype == "bit" || datatype == "bigint" || datatype == "real")
                 {
                     length = "";
                 }
-                else if (datatype.ToLower() == "datetime")
+                else if (datatype == "datetimeoffset")
                 {
-                    length = "";
+                    length = $"({scale})";
                 }
                 else if (DataSet.Tables[TABLE_IDENTITY].Rows[0]["Identity"].ToString() == columnName
                     && DataSet.Tables[TABLE_IDENTITY].Rows[0]["Identity"].ToString().Trim() != "No identity column defined."

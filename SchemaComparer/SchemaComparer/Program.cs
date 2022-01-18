@@ -35,9 +35,11 @@ namespace SchemaComparer
         }
         static void GenerateDbScript()
         {
+            string printErrorsOnly = ConfigurationManager.AppSettings["printErrorsOnly"];
             List<string> tables = Table.GetTables();
 
-            string dbScript = "";
+            string dbScript = "" +
+                $"declare @printErrorsOnly bit\nset @printErrorsOnly = {printErrorsOnly}\n";
 
             foreach (string tbl in tables)
             {

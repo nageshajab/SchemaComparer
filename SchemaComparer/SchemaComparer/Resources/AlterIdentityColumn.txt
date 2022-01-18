@@ -1,5 +1,10 @@
 ﻿
 IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'{0}') AND name = '{1}' )
 BEGIN
-ALTER TABLE {0} ADD {1} INT IDENTITY(1,1)
+	if(@printErrorsOnly=1)	
+		print 'identity column {1} is missing in table {0}'
+	else
+	begin		
+		ALTER TABLE {0} ADD {1} INT IDENTITY(1,1)
+	END
 END

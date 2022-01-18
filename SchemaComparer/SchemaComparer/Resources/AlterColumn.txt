@@ -1,16 +1,23 @@
-﻿
-
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'{1}') AND name = '{2}')
+﻿IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'{1}') AND name = '{2}')
 BEGIN
-ALTER TABLE {1}
-ADD {0};
+	if(@printErrorsOnly=1)	
+		print 'column {2} missing in table {1}'
+	else
+	begin		
+		ALTER TABLE {1}
+		ADD {0};
+	end
 END
 
 if exists ( SELECT column_name, data_type,character_maximum_length FROM information_schema.columns
 WHERE table_name = '{1}' and COLUMN_NAME='{2}' and 
 ( DATA_TYPE !='{3}' {4} ))	
 begin 
-ALTER TABLE {1}
-ALTER column {0};
+	if(@printErrorsOnly=1)	
+		print 'column {2} is present in table {1} but either datatype or maxlength is incorrect'
+	else
+	begin		
+		ALTER TABLE {1}
+		ALTER column {0};
+	end
 end
-

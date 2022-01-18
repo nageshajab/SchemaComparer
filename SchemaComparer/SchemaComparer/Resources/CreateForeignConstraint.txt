@@ -4,11 +4,15 @@ referenced_object_id = OBJECT_ID(N'{6}')
 and parent_object_id = OBJECT_ID(N'{0}'))
 begin
 
-ALTER TABLE {0}  WITH CHECK ADD CONSTRAINT {1} FOREIGN KEY({2})
-REFERENCES {3} 
-ON DELETE {4}
-ON UPDATE {5}
+	if(@printErrorsOnly=1)	
+		print 'foreign key missing on parent table {0}.{2} and {3}'
+	else
+	begin	
+		ALTER TABLE {0}  WITH CHECK ADD CONSTRAINT {1} FOREIGN KEY({2})
+		REFERENCES {3} 
+		ON DELETE {4}
+		ON UPDATE {5}
 
-ALTER TABLE {0} CHECK CONSTRAINT {1}
-
+		ALTER TABLE {0} CHECK CONSTRAINT {1}
+	end
 END
