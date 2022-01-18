@@ -1,0 +1,1 @@
+﻿or character_maximum_length != {0}

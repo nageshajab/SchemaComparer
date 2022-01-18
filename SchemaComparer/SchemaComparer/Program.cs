@@ -16,9 +16,25 @@ namespace SchemaComparer
 
         static void Main(string[] args)
         {
-            //if u want to execute generated script, uncomment below line
-            //ExecuteScript();
+            string[] menu = { "1. Generate Script", "2. Run Script", "3. Exit" };
 
+            do
+            {
+                Console.WriteLine("Database pointed to: " + connstring);
+                foreach (string str in menu) Console.WriteLine(str);
+                Console.WriteLine("Enter your choice");
+                string choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1": GenerateDbScript(); break;
+                    case "2": ExecuteScript(); break;
+                    case "3": System.Environment.Exit(0); break;
+                    default: continue;
+                }
+            } while (1 == 1);
+        }
+        static void GenerateDbScript()
+        {
             List<string> tables = Table.GetTables();
 
             string dbScript = "";
@@ -35,7 +51,7 @@ namespace SchemaComparer
         }
 
         static void ExecuteScript()
-        {        
+        {
             IDatabase sqlserver = new SqlServer(connstring, logger);
             string script = File.ReadAllText(".\\dbscript.sql");
             sqlserver.ExecuteNonQuery(script);

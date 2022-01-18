@@ -45,8 +45,14 @@ namespace SchemaComparer
             return lstTables;
         }
 
-        public static void ColumnIdentityScript(string column, string columnName, bool isIdentity, string datatype)
+        public static void ColumnIdentityScript(string column, string columnName, bool isIdentity, string datatype, string length)
         {
+            string sqlConditionWhenColumnLengthNotMatching = File.ReadAllText(".\\Resources\\ConditionWhenColumnLengthNotMatching.txt");
+            if (datatype == "varchar" || datatype == "nvarchar")
+                sqlConditionWhenColumnLengthNotMatching = string.Format(sqlConditionWhenColumnLengthNotMatching, length);
+            else
+                sqlConditionWhenColumnLengthNotMatching = "";
+
             if (isIdentity)
             {
                 string sqlAlterColumn = File.ReadAllText(".\\Resources\\AlterIdentityColumn.txt");
@@ -61,7 +67,7 @@ namespace SchemaComparer
                     column.Substring(0, column.LastIndexOf(",")),
                     TABLE,
                     columnName,
-                    datatype));
+                    datatype, sqlConditionWhenColumnLengthNotMatching));
             }
         }
 
@@ -74,6 +80,7 @@ namespace SchemaComparer
             int i = 0;
             foreach (DataRow dr in DataSet.Tables[TABLE_COLUMNS].Rows)
             {
+                isIdentityColumn = false;
                 string columnName = dr[0].ToString();
                 string datatype = dr[1].ToString();
                 string nullable = dr[6].ToString() == "no" ? "Not NULL" : "NULL";
@@ -118,7 +125,7 @@ namespace SchemaComparer
                 columns += appendLine + column;
                 i++;
 
-                ColumnIdentityScript(column, columnName, isIdentityColumn, datatype);
+                ColumnIdentityScript(column, columnName, isIdentityColumn, datatype, length);
             }
 
             columns = columns.Substring(0, columns.LastIndexOf(","));
